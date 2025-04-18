@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import Model.Account;
 import Model.Message;
 import Service.AccountService;
+import Service.MessageService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
@@ -17,10 +18,12 @@ import io.javalin.http.Context;
 public class SocialMediaController {
     // Service Variables
     private AccountService accountService;
+    private MessageService messageService;
 
     // Constructor
     public SocialMediaController() {
-        this.accountService = new AccountService();
+        accountService = new AccountService();
+        messageService = new MessageService();
     }
 
 
@@ -65,16 +68,22 @@ public class SocialMediaController {
     }
 
     // Endpoint function to create a message
-    private void createMessage(Context ctx) {
+    private void createMessage(Context ctx) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         Message message = mapper.readValue(ctx.body(), Message.class);
-        Message addedMessage = messageService.addMessage(message);
 
-        Account account = accountService.loginAccount()
-        if (addedMessage != null){
-            ctx.json(mapper.writeValueAsString(addedMessage));
-            ctx.status(200);
-        } else{
+        // Make sure account is valid
+        Account account = accountService.getAccountById(message.getPosted_by());
+        if (account != null) {
+            // Try to add message if account is valid
+            Message addedMessage = messageService.addMessage(message);
+            if (addedMessage != null){
+                ctx.json(mapper.writeValueAsString(addedMessage));
+                ctx.status(200);
+            } else{
+                ctx.status(400);
+            }
+        } else {
             ctx.status(400);
         }
     }

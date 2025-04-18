@@ -30,6 +30,7 @@ public class AccountService {
         }
     }
 
+    // Match account info to login
     public Account loginAccount(Account account) {
         Account loggedAccount = accountDAO.getAccountByUsernameAndPassword(account.getUsername(), account.getPassword());
         if (loggedAccount != null) {
@@ -37,5 +38,10 @@ public class AccountService {
         } else {
             return null;
         }
+    }
+
+    // Get account by id
+    public Account getAccountById(int id) {
+        return accountDAO.getAccountById(id);
     }
 }

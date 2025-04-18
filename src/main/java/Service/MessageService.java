@@ -22,6 +22,8 @@ public class MessageService {
             return null;
         } else if (messageText.length() >= 255) {
             return null;
-        } else if ()
+        }
+
+        return messageDAO.insertMessage(message);
     }
 }
