@@ -23,7 +23,7 @@ public class AccountService {
             return null;
         } else if (account.getUsername() == null || account.getUsername().isEmpty()) {
             return null;
-        } else if (accountDAO.getAccountById(account.getAccount_id()) != null) {
+        } else if (accountDAO.getAccountByUsername(account.getUsername()) != null) {
             return null;
         } else {
             return accountDAO.insertAccount(account);
@@ -43,5 +43,10 @@ public class AccountService {
     // Get account by id
     public Account getAccountById(int id) {
         return accountDAO.getAccountById(id);
+    }
+
+    // Get account by username
+    public Account getAccountByUsername(String username) {
+        return accountDAO.getAccountByUsername(username);
     }
 }

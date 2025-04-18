@@ -125,7 +125,12 @@ public class SocialMediaController {
 
         // Response
         ObjectMapper mapper = new ObjectMapper();
-        ctx.json(mapper.writeValueAsString(message));
+
+        if (message == null) {
+            new Message();
+        } else {
+            ctx.json(mapper.writeValueAsString(message));
+        }
         ctx.status(200);
     }
 
@@ -140,7 +145,12 @@ public class SocialMediaController {
 
         // Response
         ObjectMapper mapper = new ObjectMapper();
-        ctx.json(mapper.writeValueAsString(message));
+
+        if (message == null) {
+            new Message();
+        } else {
+            ctx.json(mapper.writeValueAsString(message));
+        }
         ctx.status(200);
     }
 
@@ -158,7 +168,7 @@ public class SocialMediaController {
 
         // Response
         if (newMessage != null){
-            ctx.json(mapper.writeValueAsString(message));
+            ctx.json(mapper.writeValueAsString(newMessage));
             ctx.status(200);
         } else{
             ctx.status(400);

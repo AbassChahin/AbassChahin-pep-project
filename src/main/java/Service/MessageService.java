@@ -49,7 +49,7 @@ public class MessageService {
 
         if (messageText == null || messageText.isEmpty()) {
             return null;
-        } else if (messageText.length() >= 255) {
+        } else if (messageText.length() > 255) {
             return null;
         } else {
             return messageDAO.updateMessageById(id, messageText);

@@ -11,7 +11,7 @@ public class AccountDAO {
         Connection connection = ConnectionUtil.getConnection();
         try {
             String sql = "INSERT INTO account (username, password) VALUES (?,?);" ;
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
             // set username and password strings then execute
             preparedStatement.setString(1, account.getUsername());
@@ -21,7 +21,8 @@ public class AccountDAO {
             // If successful return the new account
             ResultSet pkeyResultSet = preparedStatement.getGeneratedKeys();
             if(pkeyResultSet.next()){
-                int generated_account_id = (int) pkeyResultSet.getLong(1);
+                System.out.println("sucess");
+                int generated_account_id = (int) pkeyResultSet.getInt(1);
                 return new Account(generated_account_id, account.getUsername(), account.getPassword());
             }
         }catch(SQLException e){
@@ -67,6 +68,30 @@ public class AccountDAO {
             ResultSet rs = preparedStatement.executeQuery();
 
             // Get new account
+            while(rs.next()){
+                Account account = new Account(rs.getInt("account_id"),
+                        rs.getString("username"),
+                        rs.getString("password"));
+                return account;
+            }
+        }catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
+    // Get account by username
+    public Account getAccountByUsername(String username) {
+        Connection connection = ConnectionUtil.getConnection();
+        try {
+            String sql = "SELECT * FROM account WHERE username = ?;" ;
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+            // set account_id then execute
+            preparedStatement.setString(1, username);
+            ResultSet rs = preparedStatement.executeQuery();
+
+            // Set new account
             while(rs.next()){
                 Account account = new Account(rs.getInt("account_id"),
                         rs.getString("username"),
