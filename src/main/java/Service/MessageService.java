@@ -43,4 +43,21 @@ public class MessageService {
     public Message deleteMessageById(int id) {
         return messageDAO.deleteMessageById(id);
     }
+
+    // Update message by id after conditions met
+    public Message updateMessageById(int id, String messageText) {
+
+        if (messageText == null || messageText.isEmpty()) {
+            return null;
+        } else if (messageText.length() >= 255) {
+            return null;
+        } else {
+            return messageDAO.updateMessageById(id, messageText);
+        }
+    }
+
+    // Get messages by account id
+    public List<Message> getMessagesByAccountId(int id) {
+        return messageDAO.getMessagesByAccountId(id);
+    }  
 }

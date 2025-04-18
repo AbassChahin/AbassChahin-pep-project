@@ -104,4 +104,57 @@ public class MessageDAO {
         }
         return message;
     }
+
+    // Update message by id
+    public Message updateMessageById(int id, String messageText) {
+        Connection connection = ConnectionUtil.getConnection();
+
+        // Check if exists
+        Message message = getMessageById(id);
+        if (message != null) {
+            try {
+                String sql = "UPDATE message SET message_text = ? WHERE message_id = ?";
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
+    
+                // Set id and text of message
+                preparedStatement.setString(1, messageText);
+                preparedStatement.setInt(2, id);
+                preparedStatement.executeUpdate();
+
+                message = getMessageById(id);
+            } catch(SQLException e){
+                System.out.println(e.getMessage());
+            }
+        } else {
+            return null;
+        }
+        return message;
+    }
+
+    // Get messages by account id
+    public List<Message> getMessagesByAccountId(int id) {
+        Connection connection = ConnectionUtil.getConnection();
+
+        // List containing all messages
+        List<Message> messages = new ArrayList<>();
+        try {
+            String sql = "SELECT * FROM message WHERE posted_by = ?;" ;
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+            // Set account id and execute
+            preparedStatement.setInt(1, id);
+            ResultSet rs = preparedStatement.executeQuery();
+            
+            while(rs.next()){
+                Message message = new Message(rs.getInt("message_id"),
+                        rs.getInt("posted_by"),
+                        rs.getString("message_text"),
+                        rs.getLong("time_posted_epoch"));
+                messages.add(message);
+            }
+        } catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return messages;
+    }
 }
