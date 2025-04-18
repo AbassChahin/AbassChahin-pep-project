@@ -8,6 +8,7 @@ import Service.AccountService;
 import Service.MessageService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import java.util.List;
 
 
 /**
@@ -34,9 +35,19 @@ public class SocialMediaController {
      */
     public Javalin startAPI() {
         Javalin app = Javalin.create();
+
+        // Post Requests
         app.post("/register", this::register);
         app.post("/login", this::login);
         app.post("/messages", this::createMessage);
+
+        // Get Requests
+        app.get("/messages", this::getMessages);
+        app.get("/messages/{message_id}", this::getMessageById);
+
+        // Delete Requests
+        app.delete("/messages/{message_id}", this::deleteMessageById);
+
 
         return app;
     }
@@ -88,5 +99,44 @@ public class SocialMediaController {
         }
     }
 
+    // Endpoint function to get all messages
+    private void getMessages(Context ctx) throws JsonProcessingException  {
+        // Get messages
+        List<Message> allMessages = messageService.getAllMessages();
 
+        // Response
+        ObjectMapper mapper = new ObjectMapper();
+        ctx.json(mapper.writeValueAsString(allMessages));
+        ctx.status(200);
+    }
+
+    // Endpoint function to get message by id
+    private void getMessageById(Context ctx) throws JsonProcessingException  {
+        // Get parameter then convert to int
+        String messageId = ctx.pathParam("message_id");
+        int msgId = Integer.parseInt(messageId);
+
+        // Get message
+        Message message = messageService.getMessageById(msgId);
+
+        // Response
+        ObjectMapper mapper = new ObjectMapper();
+        ctx.json(mapper.writeValueAsString(message));
+        ctx.status(200);
+    }
+
+    // Endpoint function to delete message by id
+    private void deleteMessageById(Context ctx) throws JsonProcessingException  {
+        // Get parameter then convert to int
+        String messageId = ctx.pathParam("message_id");
+        int msgId = Integer.parseInt(messageId);
+
+        // Get message
+        Message message = messageService.deleteMessageById(msgId);
+
+        // Response
+        ObjectMapper mapper = new ObjectMapper();
+        ctx.json(mapper.writeValueAsString(message));
+        ctx.status(200);
+    }
 }

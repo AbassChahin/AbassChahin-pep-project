@@ -2,6 +2,7 @@ package Service;
 
 import DAO.MessageDAO;
 import Model.Message;
+import java.util.List;
 
 public class MessageService {
     private MessageDAO messageDAO;
@@ -16,6 +17,7 @@ public class MessageService {
         this.messageDAO = messageDAO;
     }
 
+    // Add message after conditions met
     public Message addMessage(Message message) {
         String messageText = message.getMessage_text();
         if (messageText == null || messageText.isEmpty()) {
@@ -25,5 +27,20 @@ public class MessageService {
         }
 
         return messageDAO.insertMessage(message);
+    }
+
+    // Return list of all messages
+    public List<Message> getAllMessages() {
+        return messageDAO.getAllMessages();
+    }
+
+    // Get message by id
+    public Message getMessageById(int id) {
+        return messageDAO.getMessageById(id);
+    }
+
+    // Delete message by id
+    public Message deleteMessageById(int id) {
+        return messageDAO.deleteMessageById(id);
     }
 }
